@@ -1,4 +1,4 @@
-import { cookies } from 'next/headers';
+import { checkAdminAuth } from '@/app/actions/auth';
 import { getProfiles } from '@/app/actions/profiles';
 import { getLeads } from '@/app/actions/leads';
 import { getAppointments } from '@/app/actions/appointments';
@@ -16,9 +16,7 @@ export const metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function AdminPage() {
-  const cookieStore = await cookies();
-  const session = cookieStore.get('admin_session');
-  const isAuthenticated = session?.value === 'authenticated';
+  const isAuthenticated = await checkAdminAuth();
 
   if (!isAuthenticated) {
     return <AdminLoginGate />;
