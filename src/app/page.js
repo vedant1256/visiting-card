@@ -28,7 +28,8 @@ export default async function HomePage() {
 
   return (
     <div style={{ 
-      minHeight: '100vh', 
+      minHeight: '100vh',
+      overflowX: 'hidden', 
       background: 'linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 30%, #F8FAFC 100%)', 
       color: '#0F172A',
       fontFamily: 'var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)'
@@ -59,7 +60,7 @@ export default async function HomePage() {
         <div style={{
           maxWidth: '1120px',
           margin: '0 auto',
-          padding: '14px 24px',
+          padding: '14px 16px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center'
@@ -90,9 +91,8 @@ export default async function HomePage() {
           </Link>
 
           {/* Navigation Actions */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <a 
-              href="#demos" 
+          <div className="home-nav-links" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <a className="desktop-only-link" href="#demos" 
               style={{
                 fontSize: '0.88rem',
                 color: '#475569',
@@ -103,8 +103,7 @@ export default async function HomePage() {
             >
               Live Demos
             </a>
-            <a 
-              href="#principles" 
+            <a className="desktop-only-link" href="#principles" 
               style={{
                 fontSize: '0.88rem',
                 color: '#475569',
@@ -164,7 +163,7 @@ export default async function HomePage() {
           </div>
 
           <h1 style={{ 
-            fontSize: 'clamp(2.2rem, 5vw, 3.4rem)', 
+            fontSize: 'clamp(1.7rem, 8vw, 3.4rem)', 
             fontWeight: 900, 
             letterSpacing: '-0.03em', 
             lineHeight: 1.15, 
@@ -211,8 +210,7 @@ export default async function HomePage() {
               <span>Launch Admin Console</span>
             </Link>
 
-            <a 
-              href="#demos" 
+            <a className="desktop-only-link" href="#demos" 
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',

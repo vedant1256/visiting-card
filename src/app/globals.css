@@ -2252,3 +2252,7 @@ input, textarea, select {
 @media (max-width: 600px) {
   .home-stats-grid { grid-template-columns: 1fr; }
 }
+.desktop-only-link { display: inline-flex; }
+@media (max-width: 600px) {
+  .desktop-only-link { display: none !important; }
+}
