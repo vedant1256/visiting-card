@@ -1,0 +1,414 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Profile {
+  id             String  @id @default(cuid()) @map("_id")
+  slug           String  @unique
+  profileType    String // BUSINESS_PROFESSIONAL, POLITICIAN, NETWORK_MARKETING, INDIVIDUAL, ORGANIZATION, CUSTOM
+  customTypeName String?
+  status         String  @default("PUBLISHED") // DRAFT, PUBLISHED, PRIVATE, SUSPENDED
+
+  // Person Basic Info
+  fullName          String
+  displayName       String?
+  designation       String
+  professionalTitle String?
+  headline          String?
+  bio               String?
+  profileImage      String?
+  coverImage        String?
+  brandColor        String  @default("#0F75F8")
+
+  // Direct Contacts
+  phone       String?
+  email       String?
+  whatsapp    String?
+  website     String?
+  gender      String?
+  dateOfBirth String?
+  location    String?
+
+  // Politician / Public Representative Specifics
+  publicRoleTitle  String?
+  constituency     String?
+  publicOffice     String?
+  responsibilities String?
+  termInfo         String?
+
+  // Organization Specifics
+  orgName        String?
+  orgLogo        String?
+  orgIndustry    String?
+  orgType        String?
+  orgFounded     String?
+  orgDescription String?
+  orgMission     String?
+  orgVision      String?
+  orgWebsite     String?
+  orgEmail       String?
+  orgPhone       String?
+
+  // Network Marketing Team Specifics
+  teamName           String?
+  teamDescription    String?
+  teamImage          String?
+  teamLeadershipInfo String?
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Modular Configurations & Content Collections
+  moduleConfigs     ProfileModuleConfig[]
+  services          Service[]
+  products          Product[]
+  productCategories ProductCategory[]
+  projects          Project[]
+  events            Event[]
+  publicActivities  PublicActivity[]
+  awards            Award[]
+  achievements      Achievement[]
+  certifications    Certification[]
+  experiences       Experience[]
+  educations        Education[]
+  skills            Skill[]
+  timelines         Timeline[]
+  testimonials      Testimonial[]
+  teamMembers       TeamMember[]
+  galleryItems      GalleryItem[]
+  documents         Document[]
+  locations         Location[]
+  socialLinks       SocialLink[]
+  leads             Lead[]
+  appointments      Appointment[]
+  customSections    CustomSection[]
+  analyticsEvents   AnalyticsEvent[]
+}
+
+model ProfileModuleConfig {
+  id           String  @id @default(cuid()) @map("_id")
+  profileId    String
+  profile      Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  moduleKey    String // e.g. ABOUT, SERVICES, PRODUCTS, PUBLIC_ROLE, PUBLIC_ACTIVITIES, etc.
+  isEnabled    Boolean @default(true)
+  isPublic     Boolean @default(true)
+  displayOrder Int     @default(0)
+  customTitle  String? // Custom title override (e.g. "My Journey" instead of "About")
+
+  @@unique([profileId, moduleKey])
+}
+
+model Service {
+  id               String   @id @default(cuid()) @map("_id")
+  profileId        String
+  profile          Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  name             String
+  icon             String?
+  shortDescription String?
+  fullDescription  String?
+  features         String? // comma-separated or json string
+  price            String?
+  enquiryButton    String?  @default("Enquire Now")
+  createdAt        DateTime @default(now())
+}
+
+model ProductCategory {
+  id           String  @id @default(cuid()) @map("_id")
+  profileId    String
+  profile      Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  name         String
+  displayOrder Int     @default(0)
+}
+
+model Product {
+  id             String   @id @default(cuid()) @map("_id")
+  profileId      String
+  profile        Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  category       String?
+  name           String
+  coverImage     String?
+  description    String?
+  features       String?
+  benefits       String?
+  specifications String?
+  price          String?
+  brochureUrl    String?
+  videoUrl       String?
+  websiteUrl     String?
+  createdAt      DateTime @default(now())
+}
+
+model Project {
+  id           String   @id @default(cuid()) @map("_id")
+  profileId    String
+  profile      Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  title        String
+  client       String?
+  description  String?
+  technologies String?
+  results      String?
+  image        String?
+  link         String?
+  createdAt    DateTime @default(now())
+}
+
+model Event {
+  id           String   @id @default(cuid()) @map("_id")
+  profileId    String
+  profile      Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  title        String
+  date         String
+  startTime    String?
+  endTime      String?
+  location     String?
+  description  String?
+  category     String?
+  role         String?
+  coverImage   String?
+  photos       String? // comma-separated URLs or JSON for motion gallery
+  highlights   String? // newline-separated or JSON list of key highlights/bullets
+  externalLink String?
+  createdAt    DateTime @default(now())
+}
+
+model PublicActivity {
+  id          String   @id @default(cuid()) @map("_id")
+  profileId   String
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  title       String
+  date        String
+  location    String?
+  description String?
+  category    String? // Community Event, Development Activity, Public Meeting, etc.
+  photos      String? // comma-separated URLs or JSON
+  videoUrl    String?
+  highlights  String? // newline-separated or JSON list of key highlights/bullets
+  createdAt   DateTime @default(now())
+}
+
+model Award {
+  id              String  @id @default(cuid()) @map("_id")
+  profileId       String
+  profile         Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  title           String
+  issuer          String
+  year            String
+  description     String?
+  image           String?
+  photos          String? // comma-separated URLs or JSON
+  highlights      String? // newline-separated or JSON list of key highlights/bullets
+  verificationUrl String?
+}
+
+model Achievement {
+  id          String  @id @default(cuid()) @map("_id")
+  profileId   String
+  profile     Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  title       String
+  date        String?
+  description String?
+  rankBadge   String?
+  image       String?
+  photos      String? // comma-separated URLs or JSON
+  highlights  String? // newline-separated or JSON list of key highlights/bullets
+}
+
+model Certification {
+  id            String  @id @default(cuid()) @map("_id")
+  profileId     String
+  profile       Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  title         String
+  issuer        String
+  issueDate     String?
+  expiryDate    String?
+  credentialId  String?
+  credentialUrl String?
+}
+
+model Experience {
+  id          String  @id @default(cuid()) @map("_id")
+  profileId   String
+  profile     Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  jobTitle    String
+  company     String
+  location    String?
+  startDate   String
+  endDate     String?
+  isCurrent   Boolean @default(false)
+  description String?
+}
+
+model Education {
+  id           String  @id @default(cuid()) @map("_id")
+  profileId    String
+  profile      Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  degree       String
+  institution  String
+  fieldOfStudy String?
+  startDate    String?
+  endDate      String?
+  grade        String?
+}
+
+model Skill {
+  id          String  @id @default(cuid()) @map("_id")
+  profileId   String
+  profile     Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  name        String
+  proficiency String? // Beginner, Intermediate, Expert, or percentage
+  category    String?
+}
+
+model Timeline {
+  id          String  @id @default(cuid()) @map("_id")
+  profileId   String
+  profile     Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  year        String
+  title       String
+  description String?
+  icon        String?
+}
+
+model Testimonial {
+  id            String  @id @default(cuid()) @map("_id")
+  profileId     String
+  profile       Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  authorName    String
+  authorTitle   String?
+  authorCompany String?
+  authorImage   String?
+  content       String
+  rating        Int?    @default(5)
+}
+
+model TeamMember {
+  id        String  @id @default(cuid()) @map("_id")
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  name      String
+  role      String
+  image     String?
+  bio       String?
+  linkedin  String?
+  phone     String?
+  email     String?
+}
+
+model GalleryItem {
+  id           String   @id @default(cuid()) @map("_id")
+  profileId    String
+  profile      Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  image        String
+  photos       String? // comma-separated URLs or JSON
+  caption      String?
+  description  String?
+  highlights   String? // newline-separated or JSON list of key highlights/bullets
+  date         String?
+  location     String?
+  category     String?
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+}
+
+model Document {
+  id              String   @id @default(cuid()) @map("_id")
+  profileId       String
+  profile         Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  title           String
+  description     String?
+  fileUrl         String
+  fileType        String? // PDF, Brochure, Resume, Report
+  fileSize        String?
+  category        String?
+  isPublic        Boolean  @default(true)
+  downloadEnabled Boolean  @default(true)
+  createdAt       DateTime @default(now())
+}
+
+model Location {
+  id           String  @id @default(cuid()) @map("_id")
+  profileId    String
+  profile      Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  name         String // Main HQ, Branch, Constituency Office
+  type         String? // Office, Branch, Constituency Office
+  address      String
+  city         String?
+  state        String?
+  country      String?
+  postalCode   String?
+  mapUrl       String?
+  latitude     Float?
+  longitude    Float?
+  phone        String?
+  openingHours String?
+  image        String?
+}
+
+model SocialLink {
+  id           String  @id @default(cuid()) @map("_id")
+  profileId    String
+  profile      Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  platform     String // LinkedIn, Twitter/X, Instagram, Facebook, YouTube, GitHub, Telegram
+  url          String
+  displayLabel String?
+}
+
+model Lead {
+  id          String   @id @default(cuid()) @map("_id")
+  profileId   String
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  name        String
+  email       String
+  phone       String?
+  company     String?
+  serviceName String?
+  productName String?
+  subject     String?
+  message     String
+  status      String   @default("NEW") // NEW, CONTACTED, IN_PROGRESS, QUALIFIED, CLOSED, REJECTED
+  createdAt   DateTime @default(now())
+}
+
+model Appointment {
+  id           String   @id @default(cuid()) @map("_id")
+  profileId    String
+  profile      Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  meetingType  String // In-person, Virtual (Google Meet / Zoom), Phone Consultation
+  date         String
+  timeSlot     String
+  visitorName  String
+  visitorEmail String
+  visitorPhone String?
+  notes        String?
+  status       String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED
+  createdAt    DateTime @default(now())
+}
+
+model CustomSection {
+  id           String  @id @default(cuid()) @map("_id")
+  profileId    String
+  profile      Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  sectionTitle String
+  content      String?
+  imageUrl     String?
+  videoUrl     String?
+  buttonLabel  String?
+  buttonUrl    String?
+  displayOrder Int     @default(99)
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid()) @map("_id")
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  eventType String // VIEW, QR_SCAN, SAVE_CONTACT, CALL_CLICK, WHATSAPP_CLICK, EMAIL_CLICK, ENQUIRY
+  userAgent String?
+  ipHash    String?
+  createdAt DateTime @default(now())
+}
