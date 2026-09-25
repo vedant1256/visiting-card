@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { QRCodeSVG } from 'qrcode.react';
+import imageCompression from 'browser-image-compression';
 import { 
   createProfile, 
   updateProfile, 
@@ -361,10 +362,24 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
   // File upload helpers
   const handleFileUpload = async (file) => {
     if (!file) return null;
+    let fileToUpload = file;
+    try {
+      if (file.type.startsWith('image/')) {
+        const options = { maxSizeMB: 1.5, maxWidthOrHeight: 1920, useWebWorker: true };
+        fileToUpload = await imageCompression(file, options);
+      }
+    } catch (e) {
+      console.error("Compression error:", e);
+    }
     const fd = new FormData();
-    fd.append('file', file);
+    fd.append('file', fileToUpload);
     try {
       const res = await fetch('/api/upload', { method: 'POST', body: fd });
+      if (!res.ok) {
+        if (res.status === 413) alert('File is too large! Please choose a smaller file.');
+        else alert('Upload failed with status ' + res.status);
+        return null;
+      }
       const json = await res.json();
       if (json.success) return json.url;
       alert(json.error || 'File upload failed');
@@ -380,10 +395,23 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
     if (!fileList || fileList.length === 0) return [];
     const fd = new FormData();
     for (let i = 0; i < fileList.length; i++) {
-      fd.append('files', fileList[i]);
+      let f = fileList[i];
+      try {
+        if (f.type.startsWith('image/')) {
+          f = await imageCompression(f, { maxSizeMB: 1.5, maxWidthOrHeight: 1920, useWebWorker: true });
+        }
+      } catch (e) {
+        console.error("Compression error:", e);
+      }
+      fd.append('files', f);
     }
     try {
       const res = await fetch('/api/upload', { method: 'POST', body: fd });
+      if (!res.ok) {
+        if (res.status === 413) alert('Files are too large! Please choose smaller files.');
+        else alert('Upload failed with status ' + res.status);
+        return [];
+      }
       const json = await res.json();
       if (json.success && json.urls) return json.urls;
       alert(json.error || 'Files upload failed');
