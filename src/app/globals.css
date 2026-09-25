@@ -2161,3 +2161,94 @@ input, textarea, select {
   text-align: center;
 }
 
+
+/* Responsive Admin Dashboard */
+.admin-stats-grid { grid-template-columns: repeat(4, 1fr); }
+.admin-presets-grid { grid-template-columns: repeat(3, 1fr); }
+.builder-type-grid { grid-template-columns: repeat(2, 1fr); }
+
+@media (max-width: 1024px) {
+  .admin-shell {
+    flex-direction: column;
+  }
+  .admin-nav-sidebar {
+    width: 100%;
+    position: relative;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .admin-nav-links {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 12px 16px;
+  }
+  .admin-nav-btn {
+    width: auto;
+    flex-shrink: 0;
+    border-left: none;
+    border-bottom: 3px solid transparent;
+  }
+  .admin-nav-btn.active {
+    border-left-color: transparent;
+    border-bottom-color: #0F75F8;
+    background: transparent;
+  }
+  .admin-workspace {
+    margin-left: 0;
+    padding: 20px 16px;
+    width: 100%;
+    overflow-x: hidden;
+  }
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .admin-presets-grid {
+    grid-template-columns: repeat(1, 1fr) !important;
+  }
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .builder-content-split {
+    flex-direction: column !important;
+  }
+  .builder-type-grid {
+    grid-template-columns: repeat(1, 1fr) !important;
+  }
+  .live-preview-frame {
+    width: 100% !important;
+    border-left: none !important;
+    padding-left: 0 !important;
+    border-top: 1px solid var(--border-default);
+    padding-top: 24px;
+    margin-top: 24px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+  }
+  .live-preview-frame > div:last-child {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .modal-dialog-box {
+    padding: 16px !important;
+  }
+}
+.home-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 992px) {
+  .home-stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .home-stats-grid { grid-template-columns: 1fr; }
+}

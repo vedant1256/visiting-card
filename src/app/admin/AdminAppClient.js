@@ -861,7 +861,7 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
         {activeTab === 'dashboard' && (
           <div>
             {/* Stat Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '32px' }}>
+            <div className="admin-stats-grid" style={{ display: 'grid', gap: '16px', marginBottom: '32px' }}>
               <div className="module-item-card" style={{ margin: 0, padding: '20px' }}>
                 <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>Total Cards</p>
                 <p style={{ fontSize: '1.9rem', fontWeight: 800, color: 'var(--text-primary)', margin: '4px 0 0' }}>{profiles.length}</p>
@@ -887,7 +887,7 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
 
             {/* Quick Profile Type Starter Banners */}
             <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '14px' }}>Create by Identity Category</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '32px' }}>
+            <div className="admin-presets-grid" style={{ display: 'grid', gap: '14px', marginBottom: '32px' }}>
               {Object.values(PROFILE_TYPES).slice(0, 3).map(pt => (
                 <div key={pt.key} className="module-item-card" style={{ padding: '18px', cursor: 'pointer' }} onClick={() => startCreateProfile(pt.key)}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
@@ -1317,7 +1317,7 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
             </div>
 
             {/* Content Container (Split when Live Preview is Active) */}
-            <div style={{ display: 'flex', gap: '24px' }}>
+            <div className="builder-content-split" style={{ display: 'flex', gap: '24px' }}>
               <div style={{ flex: 1 }}>
                 {/* STEP 1: CHOOSE PROFILE TYPE */}
                 {builderStep === 1 && (
@@ -1325,7 +1325,7 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
                     <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '14px' }}>
                       Step 1 — Select Profile Type Engine
                     </h3>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+                    <div className="builder-type-grid" style={{ display: 'grid', gap: '12px' }}>
                       {Object.values(PROFILE_TYPES).map(pt => (
                         <div 
                           key={pt.key}
@@ -3097,7 +3097,7 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
 
               {/* LIVE MOBILE PREVIEW FRAME (When Toggle is Active) */}
               {livePreviewMode && (
-                <div style={{ width: '380px', flexShrink: 0, borderLeft: '1px solid var(--border-default)', paddingLeft: '24px' }}>
+                <div className="live-preview-frame" style={{ width: '380px', flexShrink: 0, borderLeft: '1px solid var(--border-default)', paddingLeft: '24px' }}>
                   <div style={{ textAlign: 'center', marginBottom: '8px', fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 600 }}>
                     LIVE CARD PREVIEW
                   </div>

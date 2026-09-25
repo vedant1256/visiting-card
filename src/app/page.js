@@ -569,12 +569,7 @@ export default async function HomePage() {
         </div>
 
         {/* Feature Capability Badges */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: '16px',
-          marginBottom: '56px'
-        }}>
+        <div className="home-stats-grid" style={{ gap: '16px', marginBottom: '56px' }}>
           <div style={{ background: '#FFFFFF', padding: '20px', borderRadius: '14px', border: '1px solid #E2E8F0', textAlign: 'center' }}>
             <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#2563EB', marginBottom: '2px' }}>5+</div>
             <div style={{ fontSize: '0.78rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase' }}>Identity Engines</div>
