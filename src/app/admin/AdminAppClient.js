@@ -580,6 +580,25 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
       reader.readAsDataURL(file);
     };
 
+    const openCropperForSingle = () => {
+      const aspect = fieldId === 'coverImage' ? 3 : fieldId === 'profileImage' ? 1 : 1.5;
+      setCropQueue({
+        imageSrc: value,
+        aspect: aspect,
+        onCancel: () => setCropQueue(null),
+        onCropComplete: async (croppedFile) => {
+          setCropQueue(null);
+          setUploadingMap(prev => ({ ...prev, [fieldId]: true }));
+          const url = await handleFileUpload(croppedFile);
+          if (url) {
+            onChange(url);
+            showToast('Image cropped successfully!');
+          }
+          setUploadingMap(prev => ({ ...prev, [fieldId]: false }));
+        }
+      });
+    };
+
     return (
       <div className="admin-img-widget-card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
@@ -605,7 +624,7 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
 
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
           {value ? (
-            <div className="admin-img-preview-box">
+            <div className="admin-img-preview-box" onClick={openCropperForSingle} title="Click to Crop" style={{ cursor: 'crosshair' }}>
               <Image src={value} alt={label || "Preview"} fill style={{ objectFit: 'cover' }} unoptimized />
             </div>
           ) : (
@@ -718,6 +737,29 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
       showToast('Selected as Primary Thumbnail!');
     };
 
+    const openCropperForExisting = (url, idx) => {
+      setCropQueue({
+        imageSrc: url,
+        aspect: 1.5, // 3:2 landscape
+        onCancel: () => setCropQueue(null),
+        onCropComplete: async (croppedFile) => {
+          setCropQueue(null);
+          setUploadingMap(prev => ({ ...prev, [fieldPrefix]: true }));
+          const newUrl = await handleFileUpload(croppedFile);
+          if (newUrl) {
+            const updated = [...photoList];
+            updated[idx] = newUrl;
+            onUpdatePhotos(updated.join(', '));
+            if (url === activeThumb && onSetThumbnail) {
+              onSetThumbnail(newUrl); // update active thumb if cropped
+            }
+            showToast('Image cropped successfully!');
+          }
+          setUploadingMap(prev => ({ ...prev, [fieldPrefix]: false }));
+        }
+      });
+    };
+
     return (
       <div className="admin-multi-photo-box">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
@@ -726,7 +768,7 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
               Event Photos &amp; Motion Slideshow ({photoList.length})
             </span>
             <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', margin: 0 }}>
-              Images appear in motion on click. Select which photo serves as the <strong>Main Thumbnail</strong>.
+              Click any photo to <strong>Crop & Adjust</strong>. Select which photo serves as the <strong>Main Thumbnail</strong>.
             </p>
           </div>
           <div style={{ display: 'flex', gap: '6px' }}>
@@ -753,26 +795,30 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
               return (
                 <div key={pIdx} className={`admin-photo-grid-item ${isThumb ? 'is-thumbnail' : ''}`}>
                   <div className="admin-photo-thumb-wrap">
-                    <Image src={url} alt={`Photo ${pIdx + 1}`} fill style={{ objectFit: 'cover' }} unoptimized />
+                    <div style={{ position: 'absolute', inset: 0, cursor: 'crosshair', zIndex: 1 }} onClick={() => openCropperForExisting(url, pIdx)} title="Click to Crop">
+                      <Image src={url} alt={`Photo ${pIdx + 1}`} fill style={{ objectFit: 'cover' }} unoptimized />
+                    </div>
                     {isThumb ? (
-                      <span className="active-thumb-badge" title="Active Thumbnail for Card">
+                      <span className="active-thumb-badge" title="Active Thumbnail for Card" style={{ zIndex: 2 }}>
                         <Star size={10} /> Thumbnail
                       </span>
                     ) : (
                       <button 
                         type="button" 
-                        onClick={() => handlePickThumbnail(url)}
+                        onClick={(e) => { e.stopPropagation(); handlePickThumbnail(url); }}
                         className="make-thumb-btn"
                         title="Set as Main Thumbnail"
+                        style={{ zIndex: 2 }}
                       >
                         Set Thumbnail
                       </button>
                     )}
                     <button 
                       type="button" 
-                      onClick={() => handleRemovePhoto(pIdx)}
+                      onClick={(e) => { e.stopPropagation(); handleRemovePhoto(pIdx); }}
                       className="delete-photo-btn"
                       title="Remove photo"
+                      style={{ zIndex: 2 }}
                     >
                       <X size={12} />
                     </button>
