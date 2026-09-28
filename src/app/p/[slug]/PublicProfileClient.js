@@ -56,6 +56,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
   const [spotlightItem, setSpotlightItem] = useState(null);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [isSpotlightUiVisible, setIsSpotlightUiVisible] = useState(true);
   const [toastMessage, setToastMessage] = useState(null);
   const [cardUrl, setCardUrl] = useState('');
 
@@ -1753,7 +1754,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
         >
           <div className="spotlight-modal-dialog" onClick={(e) => e.stopPropagation()}>
             {/* Motion Media Viewport */}
-            <div className="spotlight-media-viewport">
+            <div className="spotlight-media-viewport" onClick={() => setIsSpotlightUiVisible(prev => !prev)}>
               {spotlightItem.photos && spotlightItem.photos.length > 0 ? (
                 spotlightItem.photos.map((photo, idx) => (
                   <div 
@@ -1777,7 +1778,8 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
               )}
 
               {/* Viewport Top Bar Controls */}
-              <div className="spotlight-viewport-topbar">
+              {isSpotlightUiVisible && (
+                <div className="spotlight-viewport-topbar" onClick={e => e.stopPropagation()}>
                 <div className="spotlight-tag-pill">
                   <Sparkles size={12} />
                   <span>{spotlightItem.typeLabel || spotlightItem.category || 'Event Story'}</span>
@@ -1803,14 +1805,15 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
                   </button>
                 </div>
               </div>
+              )}
 
               {/* Previous / Next Arrows */}
-              {spotlightItem.photos && spotlightItem.photos.length > 1 && (
+              {isSpotlightUiVisible && spotlightItem.photos && spotlightItem.photos.length > 1 && (
                 <>
                   <button 
                     type="button"
                     className="spotlight-nav-arrow spotlight-nav-prev"
-                    onClick={prevSpotlightSlide}
+                    onClick={(e) => { e.stopPropagation(); prevSpotlightSlide(); }}
                     title="Previous photo"
                   >
                     <ChevronLeft size={22} />
@@ -1818,7 +1821,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
                   <button 
                     type="button"
                     className="spotlight-nav-arrow spotlight-nav-next"
-                    onClick={nextSpotlightSlide}
+                    onClick={(e) => { e.stopPropagation(); nextSpotlightSlide(); }}
                     title="Next photo"
                   >
                     <ChevronRight size={22} />
@@ -1827,8 +1830,8 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
               )}
 
               {/* Viewport Bottom Status Bar */}
-              {spotlightItem.photos && spotlightItem.photos.length > 1 && (
-                <div className="spotlight-viewport-bottombar">
+              {isSpotlightUiVisible && spotlightItem.photos && spotlightItem.photos.length > 1 && (
+                <div className="spotlight-viewport-bottombar" onClick={e => e.stopPropagation()}>
                   <div className="spotlight-slide-counter">
                     <Camera size={12} />
                     <span>{activeSlideIndex + 1} / {spotlightItem.photos.length}</span>
