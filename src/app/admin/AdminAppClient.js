@@ -1,3 +1,4 @@
+import ImageCropper from '@/components/ImageCropper';
 'use client'
 
 import { useState, useEffect } from 'react';
@@ -72,6 +73,9 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
   const [editingProfileId, setEditingProfileId] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [livePreviewMode, setLivePreviewMode] = useState(false);
+
+  // Cropper State
+  const [cropQueue, setCropQueue] = useState(null); // { imageSrc, aspect, onCropComplete, onCancel }
 
   // Builder Form State
   const [selectedTypeKey, setSelectedTypeKey] = useState('BUSINESS_PROFESSIONAL');
@@ -546,15 +550,34 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
     const onFileChange = async (e) => {
       const file = e.target.files?.[0];
       if (!file) return;
-      setUploadingMap(prev => ({ ...prev, [fieldId]: true }));
-      const url = await handleFileUpload(file);
-      if (url) {
-        onChange(url);
-        showToast('Image uploaded successfully!');
-        setLivePreviewMode(true);
-      }
-      setUploadingMap(prev => ({ ...prev, [fieldId]: false }));
-      e.target.value = '';
+      
+      const aspect = fieldId === 'coverImage' ? 3 : fieldId === 'profileImage' ? 1 : 1.5;
+      
+      // Load image into cropper
+      const reader = new FileReader();
+      reader.onload = () => {
+        setCropQueue({
+          imageSrc: reader.result,
+          aspect: aspect,
+          onCancel: () => {
+            setCropQueue(null);
+            e.target.value = '';
+          },
+          onCropComplete: async (croppedFile) => {
+            setCropQueue(null);
+            setUploadingMap(prev => ({ ...prev, [fieldId]: true }));
+            const url = await handleFileUpload(croppedFile);
+            if (url) {
+              onChange(url);
+              showToast('Image uploaded successfully!');
+              setLivePreviewMode(true);
+            }
+            setUploadingMap(prev => ({ ...prev, [fieldId]: false }));
+            e.target.value = '';
+          }
+        });
+      };
+      reader.readAsDataURL(file);
     };
 
     return (
@@ -635,19 +658,46 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
     const handleUploadNewPhotos = async (e) => {
       const files = e.target.files;
       if (!files || files.length === 0) return;
-      setUploadingMap(prev => ({ ...prev, [fieldPrefix]: true }));
-      const uploadedUrls = await handleMultiFileUpload(files);
-      if (uploadedUrls.length > 0) {
-        const merged = [...photoList, ...uploadedUrls];
-        onUpdatePhotos(merged.join(', '));
-        if (!activeThumb && uploadedUrls[0] && onSetThumbnail) {
-          onSetThumbnail(uploadedUrls[0]);
+      
+      const processUpload = async (filesToUpload) => {
+        setUploadingMap(prev => ({ ...prev, [fieldPrefix]: true }));
+        const uploadedUrls = await handleMultiFileUpload(filesToUpload);
+        if (uploadedUrls.length > 0) {
+          const merged = [...photoList, ...uploadedUrls];
+          onUpdatePhotos(merged.join(', '));
+          if (!activeThumb && uploadedUrls[0] && onSetThumbnail) {
+            onSetThumbnail(uploadedUrls[0]);
+          }
+          showToast(`Uploaded ${uploadedUrls.length} photo(s)!`);
+          setLivePreviewMode(true);
         }
-        showToast(`Uploaded ${uploadedUrls.length} photo(s)!`);
-        setLivePreviewMode(true);
+        setUploadingMap(prev => ({ ...prev, [fieldPrefix]: false }));
+        e.target.value = '';
+      };
+
+      if (files.length === 1) {
+        // Single file selected: show cropper
+        const file = files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+          setCropQueue({
+            imageSrc: reader.result,
+            aspect: 1.5, // 3:2 landscape for events
+            onCancel: () => {
+              setCropQueue(null);
+              e.target.value = '';
+            },
+            onCropComplete: (croppedFile) => {
+              setCropQueue(null);
+              processUpload([croppedFile]);
+            }
+          });
+        };
+        reader.readAsDataURL(file);
+      } else {
+        // Multiple files: skip cropper
+        processUpload(files);
       }
-      setUploadingMap(prev => ({ ...prev, [fieldPrefix]: false }));
-      e.target.value = '';
     };
 
     const handleRemovePhoto = (idx) => {
@@ -3231,6 +3281,16 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
             </div>
           </div>
         </div>
+      )}
+
+      {/* Cropper Modal */}
+      {cropQueue && (
+        <ImageCropper 
+          imageSrc={cropQueue.imageSrc} 
+          aspect={cropQueue.aspect} 
+          onCropComplete={cropQueue.onCropComplete} 
+          onCancel={cropQueue.onCancel} 
+        />
       )}
 
       {/* Toast Notice */}
