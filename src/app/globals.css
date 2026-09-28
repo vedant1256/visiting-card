@@ -677,13 +677,19 @@ input, textarea, select {
 
 /* Quick Action Pillar Grid (Call, WhatsApp, Email, Scan) */
 .card-quick-actions {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
   gap: 8px;
   margin-bottom: 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.card-quick-actions::-webkit-scrollbar {
+  display: none;
 }
 
 .quick-pillar-btn {
+  flex: 1;
+  min-width: 60px;
   display: flex;
   flex-direction: column;
   align-items: center;

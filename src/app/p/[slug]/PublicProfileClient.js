@@ -319,17 +319,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
           }}
         >
           <div className="card-hero-overlay" />
-          
-          {/* Mobile Top Controls (Shown on mobile, hidden on desktop where navbar is active) */}
-          <div className="card-top-controls mobile-only-controls">
-            <button onClick={() => setShowQrModal(true)} className="top-control-btn" title="View QR Code">
-              <QrCode size={18} />
-            </button>
-            <button onClick={handleShare} className="top-control-btn" title="Share Profile">
-              <Share2 size={18} />
-            </button>
           </div>
-        </div>
 
         {/* Responsive Content: Split 2-column Website on Desktop/Tablet, Single-column Card on Mobile */}
         <div className="responsive-split-grid">
@@ -406,7 +396,11 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
               <button onClick={() => setShowQrModal(true)} className="quick-pillar-btn">
                 <div className="pillar-icon"><QrCode size={18} /></div>
                 <span>QR Code</span>
-              </button>
+                </button>
+                <button onClick={handleShare} className="quick-pillar-btn">
+                  <div className="pillar-icon"><Share2 size={18} /></div>
+                  <span>Share</span>
+                </button>
             </div>
 
             {/* Save to Contacts Button */}
