@@ -571,7 +571,6 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
             if (url) {
               onChange(url);
               showToast('Image uploaded successfully!');
-              setLivePreviewMode(true);
             }
             setUploadingMap(prev => ({ ...prev, [fieldId]: false }));
             e.target.value = '';
@@ -670,7 +669,6 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
             onSetThumbnail(uploadedUrls[0]);
           }
           showToast(`Uploaded ${uploadedUrls.length} photo(s)!`);
-          setLivePreviewMode(true);
         }
         setUploadingMap(prev => ({ ...prev, [fieldPrefix]: false }));
         e.target.value = '';
