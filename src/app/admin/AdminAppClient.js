@@ -1,5 +1,6 @@
-import ImageCropper from '@/components/ImageCropper';
 'use client'
+
+import ImageCropper from '@/components/ImageCropper';
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
