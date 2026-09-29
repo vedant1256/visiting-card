@@ -159,15 +159,10 @@ const LanguageSwitcher = () => {
 
 export default function PublicProfileClient({ profile, isPreviewMode = false }) {
   const [showSplash, setShowSplash] = useState(profile.type === 'POLITICIAN' && !!profile.splashImage && !isPreviewMode);
-  const [splashPhase, setSplashPhase] = useState('hidden');
-
   useEffect(() => {
     if (showSplash) {
-      const t1 = setTimeout(() => setSplashPhase('image'), 300);
-      const t2 = setTimeout(() => setSplashPhase('text'), 1800);
-      const t3 = setTimeout(() => setSplashPhase('fadeout'), 5000);
-      const t4 = setTimeout(() => setShowSplash(false), 5800);
-      return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
+      const t = setTimeout(() => setShowSplash(false), 5800);
+      return () => clearTimeout(t);
     }
   }, [showSplash]);
 
@@ -383,39 +378,60 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
   return (
     <div className="public-card-container" style={{ '--brand-primary': brandColor }}>
       {showSplash && (
-        <div 
-          onClick={() => setShowSplash(false)}
-          style={{
-            position: 'fixed', inset: 0, zIndex: 999999, background: '#000', display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'center',
-            opacity: splashPhase === 'fadeout' ? 0 : 1,
-            transition: 'opacity 0.8s ease-in-out',
-            cursor: 'pointer'
-          }}
-        >
-          <div style={{
-            position: 'absolute', inset: 0,
-            opacity: (splashPhase === 'image' || splashPhase === 'text') ? 0.6 : 0,
-            transition: 'opacity 1s ease-in-out'
-          }}>
-            <Image src={profile.splashImage} alt="Splash Intro" fill style={{ objectFit: 'contain' }} unoptimized priority />
+        <>
+          <style>{`
+            @keyframes splash-fade-in-out {
+              0% { opacity: 0; pointer-events: auto; }
+              10% { opacity: 1; pointer-events: auto; }
+              85% { opacity: 1; pointer-events: auto; }
+              100% { opacity: 0; pointer-events: none; }
+            }
+            @keyframes splash-image-anim {
+              0% { opacity: 0; transform: scale(1.1) translateY(10px); }
+              15% { opacity: 0.9; transform: scale(1) translateY(0); }
+              85% { opacity: 0.9; transform: scale(1) translateY(0); }
+              100% { opacity: 0; transform: scale(0.9) translateY(-10px); }
+            }
+            @keyframes splash-text-anim {
+              0% { opacity: 0; transform: translateY(30px); }
+              25% { opacity: 0; transform: translateY(30px); }
+              35% { opacity: 1; transform: translateY(0); }
+              85% { opacity: 1; transform: translateY(0); }
+              100% { opacity: 0; transform: translateY(-30px); }
+            }
+          `}</style>
+          <div 
+            onClick={() => setShowSplash(false)}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 999999, background: '#000', display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+              animation: 'splash-fade-in-out 5.8s forwards'
+            }}
+          >
+            <div style={{
+              position: 'absolute', inset: 0,
+              animation: 'splash-image-anim 5.8s forwards'
+            }}>
+              <Image src={profile.splashImage} alt="Splash Intro" fill style={{ objectFit: 'contain' }} unoptimized priority />
+            </div>
+            <div style={{
+              position: 'relative', zIndex: 2, textAlign: 'center', padding: '20px', width: '100%', maxWidth: '600px',
+              animation: 'splash-text-anim 5.8s forwards'
+            }}>
+              {profile.splashText && profile.splashText.split('\n').map((line, i) => (
+                <p key={i} style={{ color: '#FFF', fontSize: '1.8rem', lineHeight: 1.4, fontWeight: 800, margin: '8px 0', textShadow: '0 4px 12px rgba(0,0,0,0.8)' }}>
+                  {line}
+                </p>
+              ))}
+            </div>
+            <div style={{ 
+              position: 'absolute', bottom: '40px', color: '#FFF', fontSize: '0.85rem', letterSpacing: '2px', textTransform: 'uppercase',
+              animation: 'splash-text-anim 5.8s forwards', opacity: 0.6 
+            }}>
+              Tap anywhere to enter
+            </div>
           </div>
-          <div style={{
-            position: 'relative', zIndex: 2, textAlign: 'center', padding: '20px', width: '100%', maxWidth: '600px',
-            opacity: splashPhase === 'text' ? 1 : 0,
-            transform: splashPhase === 'text' ? 'translateY(0)' : 'translateY(20px)',
-            transition: 'all 1s ease-in-out'
-          }}>
-            {profile.splashText && profile.splashText.split('\n').map((line, i) => (
-              <p key={i} style={{ color: '#FFF', fontSize: '1.8rem', lineHeight: 1.4, fontWeight: 800, margin: '8px 0', textShadow: '0 4px 12px rgba(0,0,0,0.8)' }}>
-                {line}
-              </p>
-            ))}
-          </div>
-          <div style={{ position: 'absolute', bottom: '40px', color: '#FFF', opacity: 0.6, fontSize: '0.85rem', letterSpacing: '2px', textTransform: 'uppercase' }}>
-            Tap anywhere to enter
-          </div>
-        </div>
+        </>
       )}
       <div className="public-card-shell">
         <LanguageSwitcher />
