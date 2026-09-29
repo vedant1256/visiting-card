@@ -39,7 +39,10 @@ model Profile {
   constituency     String?
   publicOffice     String?
   responsibilities String?
-  termInfo         String?
+  termInfo             String?
+  citizensRepresented  String?
+  municipalCoverage    String?
+  assemblyAttendance   String?
 
   // Organization Specifics
   orgName        String?

@@ -46,6 +46,39 @@ import {
 import { createLead } from '@/app/actions/leads';
 import { bookAppointment } from '@/app/actions/appointments';
 
+const SlideshowThumbnail = ({ photos, alt }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (!photos || photos.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentIndex(prev => (prev + 1) % photos.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, [photos]);
+
+  if (!photos || photos.length === 0) return null;
+
+  return (
+    <>
+      {photos.map((src, idx) => (
+        <Image 
+          key={src + idx}
+          src={src} 
+          alt={alt} 
+          fill 
+          style={{ 
+            objectFit: 'cover',
+            opacity: idx === currentIndex ? 1 : 0,
+            transition: 'opacity 1s ease-in-out'
+          }} 
+          unoptimized 
+        />
+      ))}
+    </>
+  );
+};
+
 export default function PublicProfileClient({ profile, isPreviewMode = false }) {
   const [showQrModal, setShowQrModal] = useState(false);
   const [showEnquiryModal, setShowEnquiryModal] = useState(false);
@@ -339,9 +372,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
               ) : (
                 profile.fullName.charAt(0).toUpperCase()
               )}
-              <div className="card-verified-badge" title="Verified Profile">
-                <Check size={14} strokeWidth={3} />
-              </div>
+
             </div>
 
             <div className="card-header-info">
@@ -560,56 +591,69 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
                       </h2>
                     </div>
                     <div className="civic-mandate-card">
-                      <div 
-                        className="civic-mandate-hero"
-                        style={{ 
-                          backgroundImage: `url(${profile.coverImage || 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=1000&auto=format&fit=crop&q=80'})` 
-                        }}
-                      >
-                        <div className="civic-mandate-overlay">
-                          <div>
-                            <span style={{ fontSize: '0.72rem', background: '#FFFFFF', color: '#92400E', padding: '3px 10px', borderRadius: '4px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em', display: 'inline-block', marginBottom: '4px' }}>
-                              Official Civic Mandate
-                            </span>
-                            <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#FFFFFF', margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
-                              {profile.publicRoleTitle || 'Member of Legislative Assembly'}
-                            </h3>
+                      {profile.publicRoleTitle && (
+                        <div 
+                          className="civic-mandate-hero"
+                          style={{ 
+                            backgroundImage: `url(${profile.coverImage || 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=1000&auto=format&fit=crop&q=80'})` 
+                          }}
+                        >
+                          <div className="civic-mandate-overlay">
+                            <div>
+                              <span style={{ fontSize: '0.72rem', background: '#FFFFFF', color: '#92400E', padding: '3px 10px', borderRadius: '4px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em', display: 'inline-block', marginBottom: '4px' }}>
+                                Official Civic Mandate
+                              </span>
+                              <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#FFFFFF', margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+                                {profile.publicRoleTitle}
+                              </h3>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      )}
 
-                      {/* Visual Civic Stats Metric Ribbon */}
-                      <div className="civic-stats-grid">
-                        <div className="civic-stat-item">
-                          <div className="civic-stat-val">520,000+</div>
-                          <div className="civic-stat-label">Citizens Represented</div>
+                      {(profile.citizensRepresented || profile.municipalCoverage || profile.assemblyAttendance || profile.termInfo) && (
+                        <div className="civic-stats-grid">
+                          {profile.citizensRepresented && (
+                            <div className="civic-stat-item">
+                              <div className="civic-stat-val">{profile.citizensRepresented}</div>
+                              <div className="civic-stat-label">Citizens Represented</div>
+                            </div>
+                          )}
+                          {profile.municipalCoverage && (
+                            <div className="civic-stat-item">
+                              <div className="civic-stat-val">{profile.municipalCoverage}</div>
+                              <div className="civic-stat-label">Municipal Coverage</div>
+                            </div>
+                          )}
+                          {profile.assemblyAttendance && (
+                            <div className="civic-stat-item">
+                              <div className="civic-stat-val">{profile.assemblyAttendance}</div>
+                              <div className="civic-stat-label">Assembly Attendance</div>
+                            </div>
+                          )}
+                          {profile.termInfo && (
+                            <div className="civic-stat-item">
+                              <div className="civic-stat-val">{profile.termInfo}</div>
+                              <div className="civic-stat-label">Elected Term</div>
+                            </div>
+                          )}
                         </div>
-                        <div className="civic-stat-item">
-                          <div className="civic-stat-val">14 Wards</div>
-                          <div className="civic-stat-label">Municipal Coverage</div>
-                        </div>
-                        <div className="civic-stat-item">
-                          <div className="civic-stat-val">98.4%</div>
-                          <div className="civic-stat-label">Assembly Attendance</div>
-                        </div>
-                        <div className="civic-stat-item">
-                          <div className="civic-stat-val">2024 - 2029</div>
-                          <div className="civic-stat-label">Elected Term</div>
-                        </div>
-                      </div>
+                      )}
 
-                      <div style={{ padding: '16px 20px', background: '#FFFFFF' }}>
-                        {profile.constituency && (
-                          <p style={{ fontSize: '0.88rem', color: '#B45309', fontWeight: 600, marginBottom: '6px' }}>
-                            Jurisdiction: <strong>{profile.constituency}</strong> {profile.termInfo && `• ${profile.termInfo}`}
-                          </p>
-                        )}
-                        {profile.responsibilities && (
-                          <p style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
-                            {profile.responsibilities}
-                          </p>
-                        )}
-                      </div>
+                      {(profile.constituency || profile.responsibilities) && (
+                        <div style={{ padding: '16px 20px', background: '#FFFFFF' }}>
+                          {profile.constituency && (
+                            <p style={{ fontSize: '0.88rem', color: '#B45309', fontWeight: 600, marginBottom: '6px' }}>
+                              Jurisdiction: <strong>{profile.constituency}</strong> {profile.termInfo && `• ${profile.termInfo}`}
+                            </p>
+                          )}
+                          {profile.responsibilities && (
+                            <p style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
+                              {profile.responsibilities}
+                            </p>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 );

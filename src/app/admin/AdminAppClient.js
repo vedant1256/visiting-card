@@ -1678,70 +1678,106 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
                       </div>
                     </div>
 
-                    {/* Section D: Civic & Public Mandate Details (STRICTLY Politician Only!) */}
-                    {selectedTypeKey === 'POLITICIAN' && (
-                      <div style={{ background: '#FFFBEB', padding: '16px', borderRadius: 'var(--radius-sm)', border: '1px solid #FDE68A' }}>
-                        <h4 style={{ fontSize: '0.88rem', fontWeight: 700, color: '#92400E', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <Flag size={15} />
-                          <span>Civic Mandate &amp; Public Representative Role</span>
-                        </h4>
+                      {/* Section D: Constituency & Public Mandate */}
+                      {(selectedTypeKey === 'POLITICIAN') && (
+                        <div style={{ background: '#FDF8F6', padding: '16px', borderRadius: 'var(--radius-sm)', border: '1px solid #FED7AA', marginBottom: '14px' }}>
+                          <h4 style={{ fontSize: '0.88rem', fontWeight: 700, color: '#9A3412', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <Flag size={15} />
+                            <span>Constituency &amp; Public Mandate</span>
+                          </h4>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
-                          <div>
-                            <label className="form-field-label">Official Public Role Title</label>
-                            <input 
-                              value={formData.publicRoleTitle} 
-                              onChange={(e) => setFormData({ ...formData, publicRoleTitle: e.target.value })}
-                              className="admin-text-input" 
-                              placeholder="e.g. Member of Legislative Assembly (MLA)" 
-                            />
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+                            <div>
+                              <label className="form-field-label">Public Role Title (e.g. MLA / MP)</label>
+                              <input 
+                                value={formData.publicRoleTitle || ''} 
+                                onChange={(e) => setFormData({ ...formData, publicRoleTitle: e.target.value })}
+                                className="admin-text-input" 
+                                placeholder="e.g. Member of Legislative Assembly" 
+                              />
+                            </div>
+
+                            <div>
+                              <label className="form-field-label">Constituency / Jurisdiction</label>
+                              <input 
+                                value={formData.constituency || ''} 
+                                onChange={(e) => setFormData({ ...formData, constituency: e.target.value })}
+                                className="admin-text-input" 
+                                placeholder="e.g. Vijayapur City" 
+                              />
+                            </div>
+                          </div>
+
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+                            <div>
+                              <label className="form-field-label">Public Office / Govt Department</label>
+                              <input 
+                                value={formData.publicOffice || ''} 
+                                onChange={(e) => setFormData({ ...formData, publicOffice: e.target.value })}
+                                className="admin-text-input" 
+                                placeholder="e.g. Ministry of Rural Development" 
+                              />
+                            </div>
+
+                            <div>
+                              <label className="form-field-label">Elected Term / Duration</label>
+                              <input 
+                                value={formData.termInfo || ''} 
+                                onChange={(e) => setFormData({ ...formData, termInfo: e.target.value })}
+                                className="admin-text-input" 
+                                placeholder="e.g. 2024 - 2029" 
+                              />
+                            </div>
+                          </div>
+
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+                            <div>
+                              <label className="form-field-label">Citizens Represented</label>
+                              <input 
+                                value={formData.citizensRepresented || ''} 
+                                onChange={(e) => setFormData({ ...formData, citizensRepresented: e.target.value })}
+                                className="admin-text-input" 
+                                placeholder="e.g. 520,000+" 
+                              />
+                            </div>
+
+                            <div>
+                              <label className="form-field-label">Municipal Coverage / Wards</label>
+                              <input 
+                                value={formData.municipalCoverage || ''} 
+                                onChange={(e) => setFormData({ ...formData, municipalCoverage: e.target.value })}
+                                className="admin-text-input" 
+                                placeholder="e.g. 14 Wards" 
+                              />
+                            </div>
+                          </div>
+
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+                            <div>
+                              <label className="form-field-label">Assembly Attendance / Metric</label>
+                              <input 
+                                value={formData.assemblyAttendance || ''} 
+                                onChange={(e) => setFormData({ ...formData, assemblyAttendance: e.target.value })}
+                                className="admin-text-input" 
+                                placeholder="e.g. 98.4%" 
+                              />
+                            </div>
+                            
+                            <div></div>
                           </div>
 
                           <div>
-                            <label className="form-field-label">Constituency / Jurisdiction</label>
-                            <input 
-                              value={formData.constituency} 
-                              onChange={(e) => setFormData({ ...formData, constituency: e.target.value })}
-                              className="admin-text-input" 
-                              placeholder="e.g. Pune Central Constituency" 
+                            <label className="form-field-label">Key Responsibilities / Mission Statement</label>
+                            <textarea 
+                              value={formData.responsibilities || ''} 
+                              onChange={(e) => setFormData({ ...formData, responsibilities: e.target.value })}
+                              rows={3} 
+                              className="admin-textarea" 
+                              placeholder="Describe your primary responsibilities, legislative focuses, and commitment to the public..." 
                             />
                           </div>
                         </div>
-
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
-                          <div>
-                            <label className="form-field-label">Public Office / Assembly</label>
-                            <input 
-                              value={formData.publicOffice} 
-                              onChange={(e) => setFormData({ ...formData, publicOffice: e.target.value })}
-                              className="admin-text-input" 
-                              placeholder="e.g. Maharashtra Legislative Assembly" 
-                            />
-                          </div>
-
-                          <div>
-                            <label className="form-field-label">Tenure &amp; Term Info</label>
-                            <input 
-                              value={formData.termInfo} 
-                              onChange={(e) => setFormData({ ...formData, termInfo: e.target.value })}
-                              className="admin-text-input" 
-                              placeholder="e.g. 2019 – Present (2nd Term)" 
-                            />
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="form-field-label">Key Legislative Focus &amp; Civic Priorities</label>
-                          <textarea 
-                            value={formData.responsibilities} 
-                            onChange={(e) => setFormData({ ...formData, responsibilities: e.target.value })}
-                            rows={2} 
-                            className="admin-textarea" 
-                            placeholder="Legislative committee work, infrastructure reforms, citizen grievances..." 
-                          />
-                        </div>
-                      </div>
-                    )}
+                      )}
 
                     {/* Section E: Organization Details */}
                     {(selectedTypeKey === 'BUSINESS_PROFESSIONAL' || selectedTypeKey === 'ORGANIZATION' || selectedTypeKey === 'NETWORK_MARKETING' || formData.orgName) && (
@@ -1954,17 +1990,28 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxHeight: '440px', overflowY: 'auto', paddingRight: '6px' }}>
-                      
-                      {/* 1. Public Activities & Works (STRICTLY Politician / Civic Only!) */}
+
+                        {/* 1. Public Activities & Works (STRICTLY Politician / Civic Only!) */}
                       {(isPolitician && isModuleEnabled('PUBLIC_ACTIVITIES')) && (
                         <div style={{ background: '#FFFBEB', padding: '16px', borderRadius: 'var(--radius-sm)', border: '1px solid #FDE68A' }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                             <div>
-                              <h4 style={{ fontSize: '0.94rem', fontWeight: 700, color: '#92400E', margin: 0 }}>
-                                Constituency Development Works &amp; Initiatives ({publicActivitiesList.length})
-                              </h4>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                                <input 
+                                  type="text" 
+                                  className="admin-text-input" 
+                                  value={(moduleConfigs.find(m => m.moduleKey === 'PUBLIC_ACTIVITIES') || {}).customTitle || ''}
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    setModuleConfigs(prev => prev.map(m => m.moduleKey === 'PUBLIC_ACTIVITIES' ? { ...m, customTitle: val } : m));
+                                  }}
+                                  placeholder="Constituency Development Works & Initiatives"
+                                  style={{ fontSize: '0.94rem', fontWeight: 700, color: '#92400E', margin: 0, padding: '4px 8px', width: '320px', border: '1px dashed #B45309', background: 'transparent' }}
+                                />
+                                <span style={{ fontSize: '0.94rem', fontWeight: 700, color: '#92400E' }}>({publicActivitiesList.length})</span>
+                              </div>
                               <span style={{ fontSize: '0.74rem', color: '#B45309' }}>
-                                Photos animate in motion on click. Select a photo as <strong>Main Thumbnail</strong>.
+                                Photos animate in motion on click. Select a photo as <strong>Main Thumbnail</strong>. You can rename this section above.
                               </span>
                             </div>
                             <button 
