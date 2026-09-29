@@ -148,9 +148,9 @@ const LanguageSwitcher = () => {
         }}
       >
         <option value="en">English</option>
-        <option value="hi">हिन्दी</option>
-        <option value="mr">मराठी</option>
-        <option value="kn">ಕನ್ನಡ</option>
+        <option value="hi">Hindi</option>
+        <option value="mr">Marathi</option>
+        <option value="kn">Kannada</option>
       </select>
     </div>
   );
