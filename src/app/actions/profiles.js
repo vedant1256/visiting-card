@@ -169,6 +169,11 @@ export async function createProfile(data) {
       publicOffice: data.publicOffice || null,
       responsibilities: data.responsibilities || null,
       termInfo: data.termInfo || null,
+      citizensRepresented: data.citizensRepresented || null,
+      municipalCoverage: data.municipalCoverage || null,
+      assemblyAttendance: data.assemblyAttendance || null,
+      splashImage: data.splashImage || null,
+      splashText: data.splashText || null,
 
       // Organization fields
       orgName: data.orgName || null,
@@ -232,6 +237,11 @@ export async function updateProfile(id, data) {
       publicOffice: data.publicOffice,
       responsibilities: data.responsibilities,
       termInfo: data.termInfo,
+        citizensRepresented: data.citizensRepresented,
+        municipalCoverage: data.municipalCoverage,
+        assemblyAttendance: data.assemblyAttendance,
+        splashImage: data.splashImage,
+        splashText: data.splashText,
 
       orgName: data.orgName,
       orgLogo: data.orgLogo,
