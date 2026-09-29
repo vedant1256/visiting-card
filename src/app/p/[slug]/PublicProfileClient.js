@@ -158,7 +158,7 @@ const LanguageSwitcher = () => {
 };
 
 export default function PublicProfileClient({ profile, isPreviewMode = false }) {
-  const [showSplash, setShowSplash] = useState(profile.type === 'POLITICIAN' && !!profile.splashImage && !isPreviewMode);
+  const [showSplash, setShowSplash] = useState(profile.profileType === 'POLITICIAN' && !!profile.splashImage && !isPreviewMode);
   useEffect(() => {
     if (showSplash) {
       const t = setTimeout(() => setShowSplash(false), 5800);
