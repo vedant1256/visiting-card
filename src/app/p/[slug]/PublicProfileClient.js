@@ -130,6 +130,7 @@ const LanguageSwitcher = () => {
     <div style={{ position: 'absolute', top: '16px', right: '16px', zIndex: 999 }}>
       <div id="google_translate_element"></div>
       <select 
+        className="notranslate"
         value={currentLang}
         onChange={(e) => changeLanguage(e.target.value)}
         style={{
