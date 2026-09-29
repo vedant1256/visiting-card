@@ -597,7 +597,7 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
       const file = e.target.files?.[0];
       if (!file) return;
       
-      const aspect = fieldId === 'coverImage' ? 3 : fieldId === 'profileImage' ? 1 : fieldId === 'splashImage' ? NaN : 1.5;
+      const aspect = fieldId === 'coverImage' ? 3 : fieldId === 'profileImage' ? 1 : fieldId === 'splashImage' ? 9/16 : 1.5;
       
       const reader = new FileReader();
       reader.onload = () => {
@@ -617,7 +617,7 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
     };
 
     const openCropperForSingle = () => {
-      const aspect = fieldId === 'coverImage' ? 3 : fieldId === 'profileImage' ? 1 : fieldId === 'splashImage' ? NaN : 1.5;
+      const aspect = fieldId === 'coverImage' ? 3 : fieldId === 'profileImage' ? 1 : fieldId === 'splashImage' ? 9/16 : 1.5;
       setCropQueue({
         imageSrc: value,
         aspect: aspect,
