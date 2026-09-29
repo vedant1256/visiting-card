@@ -82,7 +82,7 @@ export default async function HomePage() {
             </div>
             <div>
               <span style={{ fontSize: '1.15rem', fontWeight: 900, color: '#0F172A', letterSpacing: '-0.02em' }}>
-                OmniCard
+                Kalvion Technology
               </span>
               <span style={{ fontSize: '0.7rem', color: '#2563EB', fontWeight: 700, marginLeft: '6px', background: '#EFF6FF', padding: '2px 6px', borderRadius: '4px' }}>
                 ENTERPRISE
@@ -609,7 +609,7 @@ export default async function HomePage() {
           gap: '16px'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontWeight: 800, color: '#0F172A' }}>OmniCard Platform</span>
+            <span style={{ fontWeight: 800, color: '#0F172A' }}>Kalvion Technology Platform</span>
             <span>• Next-Generation Digital Identity System</span>
           </div>
 

@@ -6,7 +6,7 @@ import AdminAppClient from './AdminAppClient';
 import AdminLoginGate from './AdminLoginGate';
 
 export const metadata = {
-  title: 'Admin Console | OmniCard Platform',
+  title: 'Admin Console | Kalvion Technology Platform',
   robots: {
     index: false,
     follow: false,

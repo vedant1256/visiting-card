@@ -857,7 +857,7 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
         <div className="admin-nav-logo">
           <div className="admin-logo-badge">O</div>
           <div>
-            <h2 style={{ fontSize: '1rem', fontWeight: 800, margin: 0, letterSpacing: '-0.02em' }}>OmniCard</h2>
+            <h2 style={{ fontSize: '1rem', fontWeight: 800, margin: 0, letterSpacing: '-0.02em' }}>Kalvion Technology</h2>
             <p style={{ fontSize: '0.74rem', color: '#94A3B8', margin: 0 }}>Identity &amp; Visiting Cards</p>
           </div>
         </div>

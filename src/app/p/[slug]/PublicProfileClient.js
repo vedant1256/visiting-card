@@ -505,7 +505,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
                 <span>Scan with your Smartphone</span>
               </div>
               <div className="desktop-qr-box">
-                <QRCodeSVG value={cardUrl || `https://omnicard.app/p/${profile.slug}`} size={140} level="H" includeMargin={true} />
+                <QRCodeSVG value={cardUrl || `https://kalvion.app/p/${profile.slug}`} size={140} level="H" includeMargin={true} />
               </div>
               <p className="desktop-qr-hint">Scan with camera to open visiting card directly on mobile & download contact.</p>
               <button onClick={handleCopyLink} className="btn-copy-card-link">
@@ -1644,7 +1644,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
             {/* Footer Branding */}
             <div style={{ textAlign: 'center', marginTop: '40px', paddingTop: '20px', borderTop: '1px solid var(--border-light)' }}>
               <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                Powered by <strong>OmniCard</strong> Digital Identity & Visiting Card Platform
+                Powered by <strong>Kalvion Technology</strong> Digital Identity & Visiting Card Platform
               </p>
             </div>
           </main>
@@ -1663,7 +1663,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
               Scan with any mobile camera to view and save this profile
             </p>
             <div style={{ background: '#FFFFFF', padding: '16px', borderRadius: '12px', border: '1px solid var(--border-default)', display: 'inline-block', marginBottom: '16px' }}>
-              <QRCodeSVG value={cardUrl || `https://omnicard.app/p/${profile.slug}`} size={200} level="H" includeMargin={true} />
+              <QRCodeSVG value={cardUrl || `https://kalvion.app/p/${profile.slug}`} size={200} level="H" includeMargin={true} />
             </div>
             <p style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '2px' }}>{profile.fullName}</p>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>

@@ -1,7 +1,7 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'OmniCard | Dynamic Smart Digital Visiting Card Platform',
+  title: 'Kalvion Technology | Dynamic Smart Digital Visiting Card Platform',
   description: 'Enterprise-grade dynamic digital visiting card & professional identity platform.',
 };
 

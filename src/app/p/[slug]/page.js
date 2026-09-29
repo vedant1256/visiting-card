@@ -7,7 +7,7 @@ export async function generateMetadata({ params }) {
   const profile = await getProfileBySlug(resolvedParams.slug);
 
   if (!profile) {
-    return { title: 'Profile Not Found | OmniCard' };
+    return { title: 'Profile Not Found | Kalvion Technology' };
   }
 
   const roleText = profile.publicRoleTitle || profile.designation || '';
