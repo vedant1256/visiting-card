@@ -135,6 +135,7 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
   const [galleryItemsList, setGalleryItemsList] = useState([]);
   const [locationsList, setLocationsList] = useState([]);
   const [uploadingMap, setUploadingMap] = useState({});
+  const [autoRemoveBgSplash, setAutoRemoveBgSplash] = useState(true);
 
   // QR Modal State
   const [qrModalProfile, setQrModalProfile] = useState(null);
@@ -550,17 +551,54 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
   });
 
   // Render Helper: Single Image Upload Widget with Thumbnail Badge & Preview
-  const renderImageUploadWidget = ({ label, value, onChange, isThumbnail = false, helpText, fieldId }) => {
+  const renderImageUploadWidget = ({ label, value, onChange, isThumbnail = false, helpText, fieldId, enableBgRemoval = false }) => {
     const isUploading = !!uploadingMap[fieldId];
+    const uploadStatus = uploadingMap[fieldId];
     const inputId = `file-input-${fieldId}`;
+
+    const processUploadFile = async (fileToProcess, e) => {
+      setCropQueue(null);
+      let fileToUpload = fileToProcess;
+
+      if (enableBgRemoval && autoRemoveBgSplash) {
+        setUploadingMap(prev => ({ ...prev, [fieldId]: 'removing-bg' }));
+        try {
+          const formData = new FormData();
+          formData.append('file', fileToProcess);
+          const bgApiUrl = process.env.NEXT_PUBLIC_BG_REMOVER_API_URL || 'http://127.0.0.1:8000/api/remove-bg';
+          const response = await fetch(bgApiUrl, {
+            method: 'POST',
+            body: formData
+          });
+          if (response.ok) {
+            const blob = await response.blob();
+            fileToUpload = new File([blob], 'splash_cutout.png', { type: 'image/png' });
+            showToast('Background removed successfully!');
+          } else {
+            showToast('Could not remove background; original image used.');
+          }
+        } catch (err) {
+          showToast('Background remover API failed; original image used.');
+          console.error(err);
+        }
+      }
+
+      setUploadingMap(prev => ({ ...prev, [fieldId]: true }));
+      const url = await handleFileUpload(fileToUpload);
+      if (url) {
+        onChange(url);
+        if (uploadStatus !== 'removing-bg') showToast('Image uploaded successfully!');
+      }
+      setUploadingMap(prev => ({ ...prev, [fieldId]: false }));
+      if (e && e.target) e.target.value = '';
+    };
 
     const onFileChange = async (e) => {
       const file = e.target.files?.[0];
       if (!file) return;
       
-      const aspect = fieldId === 'coverImage' ? 3 : fieldId === 'profileImage' ? 1 : 1.5;
+      const aspect = fieldId === 'coverImage' ? 3 : fieldId === 'profileImage' ? 1 : fieldId === 'splashImage' ? NaN : 1.5;
       
-      // Load image into cropper
       const reader = new FileReader();
       reader.onload = () => {
         setCropQueue({
@@ -568,18 +606,10 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
           aspect: aspect,
           onCancel: () => {
             setCropQueue(null);
-            e.target.value = '';
+            if (e.target) e.target.value = '';
           },
           onCropComplete: async (croppedFile) => {
-            setCropQueue(null);
-            setUploadingMap(prev => ({ ...prev, [fieldId]: true }));
-            const url = await handleFileUpload(croppedFile);
-            if (url) {
-              onChange(url);
-              showToast('Image uploaded successfully!');
-            }
-            setUploadingMap(prev => ({ ...prev, [fieldId]: false }));
-            e.target.value = '';
+            await processUploadFile(croppedFile, e);
           }
         });
       };
@@ -587,20 +617,13 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
     };
 
     const openCropperForSingle = () => {
-      const aspect = fieldId === 'coverImage' ? 3 : fieldId === 'profileImage' ? 1 : 1.5;
+      const aspect = fieldId === 'coverImage' ? 3 : fieldId === 'profileImage' ? 1 : fieldId === 'splashImage' ? NaN : 1.5;
       setCropQueue({
         imageSrc: value,
         aspect: aspect,
         onCancel: () => setCropQueue(null),
         onCropComplete: async (croppedFile) => {
-          setCropQueue(null);
-          setUploadingMap(prev => ({ ...prev, [fieldId]: true }));
-          const url = await handleFileUpload(croppedFile);
-          if (url) {
-            onChange(url);
-            showToast('Image cropped successfully!');
-          }
-          setUploadingMap(prev => ({ ...prev, [fieldId]: false }));
+          await processUploadFile(croppedFile, null);
         }
       });
     };
@@ -631,7 +654,7 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
           {value ? (
             <div className="admin-img-preview-box" onClick={openCropperForSingle} title="Click to Crop" style={{ cursor: 'crosshair' }}>
-              <Image src={value} alt={label || "Preview"} fill style={{ objectFit: 'cover' }} unoptimized />
+              <Image src={value} alt={label || "Preview"} fill style={{ objectFit: 'contain' }} unoptimized />
             </div>
           ) : (
             <div className="admin-img-preview-empty">
@@ -645,13 +668,15 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
                 type="text"
                 value={value || ''}
                 onChange={(e) => onChange(e.target.value)}
-                placeholder="Paste image URL (https://...) or click Upload"
+                placeholder="Paste URL or Upload"
                 className="admin-text-input"
                 style={{ fontSize: '0.8rem', padding: '6px 10px', height: '34px' }}
               />
-              <label htmlFor={inputId} className="btn-upload-file" style={{ cursor: isUploading ? 'wait' : 'pointer' }}>
+              <label htmlFor={inputId} className="btn-upload-file" style={{ cursor: isUploading ? 'wait' : 'pointer', minWidth: '130px' }}>
                 <Upload size={13} />
-                <span>{isUploading ? 'Uploading...' : 'Upload'}</span>
+                <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                  {uploadStatus === 'removing-bg' ? 'AI Processing...' : isUploading ? 'Uploading...' : 'Upload'}
+                </span>
               </label>
               <input 
                 id={inputId} 
@@ -663,6 +688,18 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
               />
             </div>
             {helpText && <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{helpText}</span>}
+            {enableBgRemoval && (
+              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', marginTop: '6px', cursor: 'pointer', color: '#0F172A', fontWeight: 600 }}>
+                <input 
+                  type="checkbox" 
+                  checked={autoRemoveBgSplash} 
+                  onChange={(e) => setAutoRemoveBgSplash(e.target.checked)} 
+                  disabled={isUploading}
+                  style={{ accentColor: 'var(--brand-primary)', width: '14px', height: '14px' }}
+                />
+                Auto-remove background (AI)
+              </label>
+            )}
           </div>
         </div>
       </div>
@@ -1798,7 +1835,8 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
                             label: "Splash Intro Image (Cutout Person recommended)",
                             value: formData.splashImage,
                             onChange: (url) => setFormData(prev => ({ ...prev, splashImage: url })),
-                            fieldId: "splashImage"
+                            fieldId: "splashImage",
+                            enableBgRemoval: true
                           })}
 
                           <div className="form-group" style={{ marginTop: '16px' }}>
