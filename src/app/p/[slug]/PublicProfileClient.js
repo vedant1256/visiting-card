@@ -79,6 +79,83 @@ const SlideshowThumbnail = ({ photos, alt }) => {
   );
 };
 
+const LanguageSwitcher = () => {
+  const [currentLang, setCurrentLang] = useState('en');
+
+  useEffect(() => {
+    if (!document.getElementById('google-translate-script')) {
+      window.googleTranslateElementInit = () => {
+        new window.google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,hi,mr,kn',
+          autoDisplay: false
+        }, 'google_translate_element');
+      };
+      
+      const script = document.createElement('script');
+      script.id = 'google-translate-script';
+      script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      script.async = true;
+      document.body.appendChild(script);
+
+      const style = document.createElement('style');
+      style.innerHTML = `
+        body { top: 0 !important; }
+        .skiptranslate { display: none !important; }
+        #google_translate_element { display: none !important; }
+        .goog-te-spinner-pos { display: none !important; }
+      `;
+      document.head.appendChild(style);
+    }
+  }, []);
+
+  const changeLanguage = (langCode) => {
+    setCurrentLang(langCode);
+    const select = document.querySelector('.goog-te-combo');
+    if (select) {
+      select.value = langCode;
+      select.dispatchEvent(new Event('change'));
+    } else {
+      setTimeout(() => {
+        const retrySelect = document.querySelector('.goog-te-combo');
+        if (retrySelect) {
+          retrySelect.value = langCode;
+          retrySelect.dispatchEvent(new Event('change'));
+        }
+      }, 500);
+    }
+  };
+
+  return (
+    <div style={{ position: 'absolute', top: '16px', right: '16px', zIndex: 999 }}>
+      <div id="google_translate_element"></div>
+      <select 
+        value={currentLang}
+        onChange={(e) => changeLanguage(e.target.value)}
+        style={{
+          padding: '6px 12px',
+          borderRadius: '20px',
+          border: '1px solid rgba(255,255,255,0.4)',
+          background: 'rgba(0,0,0,0.65)',
+          color: '#FFF',
+          fontSize: '0.78rem',
+          fontWeight: 700,
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          cursor: 'pointer',
+          outline: 'none',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+        }}
+      >
+        <option value="en">English</option>
+        <option value="hi">हिन्दी</option>
+        <option value="mr">मराठी</option>
+        <option value="kn">ಕನ್ನಡ</option>
+      </select>
+    </div>
+  );
+};
+
 export default function PublicProfileClient({ profile, isPreviewMode = false }) {
   const [showQrModal, setShowQrModal] = useState(false);
   const [showEnquiryModal, setShowEnquiryModal] = useState(false);
@@ -292,6 +369,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
   return (
     <div className="public-card-container" style={{ '--brand-primary': brandColor }}>
       <div className="public-card-shell">
+        <LanguageSwitcher />
         {/* Desktop Website Executive Top Navbar (Strict Single Row, Zero Overlapping) */}
         <header className="desktop-navbar">
           <div className="desktop-nav-brand">
@@ -1638,7 +1716,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
             {/* Footer Branding */}
             <div style={{ textAlign: 'center', marginTop: '40px', paddingTop: '20px', borderTop: '1px solid var(--border-light)' }}>
               <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                Developed by <strong>Kalvion Technology Pvt Ltd</strong>
+                Developed by <a href="https://www.kalviontech.com/" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}><strong>Kalvion Technology Pvt Ltd</strong></a>
               </p>
             </div>
           </main>
