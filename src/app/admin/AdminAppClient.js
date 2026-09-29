@@ -103,6 +103,8 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
     publicOffice: '',
     responsibilities: '',
     termInfo: '',
+    splashImage: '',
+    splashText: '',
     // Organization
     orgName: '',
     orgLogo: '',
@@ -176,6 +178,10 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
       publicOffice: '',
       responsibilities: '',
       termInfo: '',
+      splashImage: '',
+      splashText: '',
+    splashImage: '',
+    splashText: '',
       orgName: '',
       orgLogo: '',
       orgIndustry: '',
@@ -1774,6 +1780,50 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
                               rows={3} 
                               className="admin-textarea" 
                               placeholder="Describe your primary responsibilities, legislative focuses, and commitment to the public..." 
+                            />
+                          </div>
+                        </div>
+
+                        {/* Welcome Splash Screen */}
+                        <div style={{ background: '#F8FAFC', padding: '16px', borderRadius: 'var(--radius-sm)', border: '1px solid #E2E8F0', marginTop: '16px' }}>
+                          <h4 style={{ fontSize: '0.94rem', fontWeight: 700, color: '#0F172A', margin: '0 0 12px 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <Sparkles size={16} /> Welcome Splash Screen
+                          </h4>
+                          <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+                            Shown as a full-screen intro animation when visitors first open your link.
+                          </p>
+
+                          <div className="form-group">
+                            <label className="form-field-label">Splash Intro Image (Cutout Person recommended)</label>
+                            <div className="image-upload-wrapper">
+                              {formData.splashImage ? (
+                                <div style={{ position: 'relative', width: '100%', height: '160px', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+                                  <Image src={formData.splashImage} alt="Splash" fill style={{ objectFit: 'contain' }} unoptimized />
+                                  <button onClick={() => setFormData(prev => ({ ...prev, splashImage: '' }))} className="btn-remove-image">
+                                    <X size={14} /> Remove Image
+                                  </button>
+                                </div>
+                              ) : (
+                                <CldUploadWidget uploadPreset={CLOUDINARY_UPLOAD_PRESET} onSuccess={(result) => setFormData(prev => ({ ...prev, splashImage: result.info.secure_url }))}>
+                                  {({ open }) => (
+                                    <div className="upload-placeholder" onClick={() => open()}>
+                                      <UploadCloud size={28} />
+                                      <span>Click to upload Splash Image</span>
+                                    </div>
+                                  )}
+                                </CldUploadWidget>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="form-group" style={{ marginTop: '16px' }}>
+                            <label className="form-field-label">Splash Intro Text (2-3 lines)</label>
+                            <textarea
+                              className="admin-textarea"
+                              rows={3}
+                              placeholder="E.g., Welcome to the official profile of...&#10;Dedicated to progress and development."
+                              value={formData.splashText || ''}
+                              onChange={(e) => setFormData(prev => ({ ...prev, splashText: e.target.value }))}
                             />
                           </div>
                         </div>

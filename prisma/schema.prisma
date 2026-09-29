@@ -43,6 +43,8 @@ model Profile {
   citizensRepresented  String?
   municipalCoverage    String?
   assemblyAttendance   String?
+  splashImage          String?
+  splashText           String?
 
   // Organization Specifics
   orgName        String?
