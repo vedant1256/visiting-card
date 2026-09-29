@@ -1638,7 +1638,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
             {/* Footer Branding */}
             <div style={{ textAlign: 'center', marginTop: '40px', paddingTop: '20px', borderTop: '1px solid var(--border-light)' }}>
               <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                Developed by <strong>Kalvion Technology Pvt Ltd</strong> Digital Identity & Visiting Card Platform
+                Developed by <strong>Kalvion Technology Pvt Ltd</strong>
               </p>
             </div>
           </main>
