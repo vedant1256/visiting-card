@@ -1686,6 +1686,7 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
 
                       {/* Section D: Constituency & Public Mandate */}
                       {(selectedTypeKey === 'POLITICIAN') && (
+                        <>
                         <div style={{ background: '#FDF8F6', padding: '16px', borderRadius: 'var(--radius-sm)', border: '1px solid #FED7AA', marginBottom: '14px' }}>
                           <h4 style={{ fontSize: '0.88rem', fontWeight: 700, color: '#9A3412', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                             <Flag size={15} />
@@ -1827,6 +1828,7 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
                             />
                           </div>
                         </div>
+                        </>
                       )}
 
                     {/* Section E: Organization Details */}
