@@ -505,7 +505,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
                 <span>Scan with your Smartphone</span>
               </div>
               <div className="desktop-qr-box">
-                <QRCodeSVG value={cardUrl || `https://kalvion.app/p/${profile.slug}`} size={140} level="H" includeMargin={true} />
+                <QRCodeSVG value={cardUrl || `https://omnicard.app/p/${profile.slug}`} size={140} level="H" includeMargin={true} />
               </div>
               <p className="desktop-qr-hint">Scan with camera to open visiting card directly on mobile & download contact.</p>
               <button onClick={handleCopyLink} className="btn-copy-card-link">
@@ -700,13 +700,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
                           >
                             {mainPhoto && (
                               <div className="activity-card-img-wrap">
-                                <Image 
-                                  src={mainPhoto} 
-                                  alt={activity.title} 
-                                  fill 
-                                  style={{ objectFit: 'cover' }} 
-                                  unoptimized 
-                                />
+                                <SlideshowThumbnail photos={photoList} alt={activity.title} />
                                 {activity.category && (
                                   <span className="activity-category-badge">
                                     {activity.category}
@@ -1094,7 +1088,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
                             title="Click to view event details and motion photos"
                           >
                             <div className="event-card-img-wrap">
-                              <Image src={mainPhoto} alt={ev.title} fill style={{ objectFit: 'cover' }} unoptimized />
+                              <SlideshowThumbnail photos={photoList.length > 0 ? photoList : [mainPhoto]} alt={ev.title} />
                               {ev.category && (
                                 <span className="event-category-badge">
                                   {ev.category}
@@ -1186,7 +1180,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
                             title="Click to view milestone story and motion photos"
                           >
                             <div className="achievement-card-img-wrap">
-                              <Image src={mainPhoto} alt={ach.title} fill style={{ objectFit: 'cover' }} unoptimized />
+                              <SlideshowThumbnail photos={photoList.length > 0 ? photoList : [mainPhoto]} alt={ach.title} />
                               {ach.rankBadge && (
                                 <span className="achievement-rank-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
                                   <Award size={13} style={{ flexShrink: 0 }} />
@@ -1271,7 +1265,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
                           >
                             {mainPhoto && (
                               <div className="award-card-img-wrap">
-                                <Image src={mainPhoto} alt={award.title} fill style={{ objectFit: 'cover' }} unoptimized />
+                                <SlideshowThumbnail photos={photoList.length > 0 ? photoList : [mainPhoto]} alt={award.title} />
                                 {award.year && (
                                   <span className="award-year-badge">
                                     {award.year}
@@ -1334,7 +1328,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
                           >
                             {mainPhoto && (
                               <div className="achievement-card-img-wrap">
-                                <Image src={mainPhoto} alt={ach.title} fill style={{ objectFit: 'cover' }} unoptimized />
+                                <SlideshowThumbnail photos={photoList.length > 0 ? photoList : [mainPhoto]} alt={ach.title} />
                                 {ach.rankBadge && (
                                   <span className="achievement-rank-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
                                     <Award size={13} style={{ flexShrink: 0 }} />
@@ -1609,7 +1603,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
                             className="gallery-story-tile"
                             title="Click to view event story and motion gallery"
                           >
-                            <Image src={mainPhoto} alt={g.caption || "Gallery"} fill style={{ objectFit: 'cover' }} unoptimized />
+                            <SlideshowThumbnail photos={photoList} alt={g.caption || "Gallery"} />
                             <div className="gallery-tile-gradient-overlay" />
                             {g.category && (
                               <span className="gallery-category-chip">
@@ -1644,7 +1638,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
             {/* Footer Branding */}
             <div style={{ textAlign: 'center', marginTop: '40px', paddingTop: '20px', borderTop: '1px solid var(--border-light)' }}>
               <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                Powered by <strong>Kalvion Technology</strong> Digital Identity & Visiting Card Platform
+                Developed by <strong>Kalvion Technology Pvt Ltd</strong> Digital Identity & Visiting Card Platform
               </p>
             </div>
           </main>
@@ -1663,7 +1657,7 @@ export default function PublicProfileClient({ profile, isPreviewMode = false }) 
               Scan with any mobile camera to view and save this profile
             </p>
             <div style={{ background: '#FFFFFF', padding: '16px', borderRadius: '12px', border: '1px solid var(--border-default)', display: 'inline-block', marginBottom: '16px' }}>
-              <QRCodeSVG value={cardUrl || `https://kalvion.app/p/${profile.slug}`} size={200} level="H" includeMargin={true} />
+              <QRCodeSVG value={cardUrl || `https://omnicard.app/p/${profile.slug}`} size={200} level="H" includeMargin={true} />
             </div>
             <p style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '2px' }}>{profile.fullName}</p>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>
