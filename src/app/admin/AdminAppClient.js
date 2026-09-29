@@ -1794,28 +1794,12 @@ export default function AdminAppClient({ initialProfiles, initialLeads, initialA
                             Shown as a full-screen intro animation when visitors first open your link.
                           </p>
 
-                          <div className="form-group">
-                            <label className="form-field-label">Splash Intro Image (Cutout Person recommended)</label>
-                            <div className="image-upload-wrapper">
-                              {formData.splashImage ? (
-                                <div style={{ position: 'relative', width: '100%', height: '160px', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-                                  <Image src={formData.splashImage} alt="Splash" fill style={{ objectFit: 'contain' }} unoptimized />
-                                  <button onClick={() => setFormData(prev => ({ ...prev, splashImage: '' }))} className="btn-remove-image">
-                                    <X size={14} /> Remove Image
-                                  </button>
-                                </div>
-                              ) : (
-                                <CldUploadWidget uploadPreset={CLOUDINARY_UPLOAD_PRESET} onSuccess={(result) => setFormData(prev => ({ ...prev, splashImage: result.info.secure_url }))}>
-                                  {({ open }) => (
-                                    <div className="upload-placeholder" onClick={() => open()}>
-                                      <UploadCloud size={28} />
-                                      <span>Click to upload Splash Image</span>
-                                    </div>
-                                  )}
-                                </CldUploadWidget>
-                              )}
-                            </div>
-                          </div>
+                          {renderImageUploadWidget({
+                            label: "Splash Intro Image (Cutout Person recommended)",
+                            value: formData.splashImage,
+                            onChange: (url) => setFormData(prev => ({ ...prev, splashImage: url })),
+                            fieldId: "splashImage"
+                          })}
 
                           <div className="form-group" style={{ marginTop: '16px' }}>
                             <label className="form-field-label">Splash Intro Text (2-3 lines)</label>
